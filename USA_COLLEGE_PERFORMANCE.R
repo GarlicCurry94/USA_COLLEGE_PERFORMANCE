@@ -106,4 +106,4 @@ college_log10_2 |>
                                 "Johns Hopkins University"="lightblue")) +
   coord_flip()+
   labs(title = "Favourite Colleges Grad Rate")
-ggsave("Favourite_colleges_grad_rate.png")
+ggsave("Favourite_colleges_grad_rate.png", scale = 2)

@@ -1,21 +1,9 @@
-install.packages("learningr")
-install.packages("gapminder")
-install.packages("rmarkdown")
-install.packages("tinytex")
-install.packages("ISLR2")
+setwd("~/GitHub/USA_COLLEGE_PERFORMANCE")
 
-library(readxl)
 library(tidyverse)
-library(janitor)
-library(palmerpenguins)
-library(learningr)
-library(gapminder)
 library(ggplot2)
-library(rmarkdown)
-library(tinytex)
-library(dplyr)
 library(ISLR2)
-library("data.table")
+
 
 View(College)
 
@@ -23,6 +11,7 @@ View(College)
 
 ggplot(College, aes(x = Grad.Rate)) +
   geom_histogram() # one outlier over 100%
+ggsave("Grad_rate.png")
 
 suspicious <- filter(College, Grad.Rate >= 100)
 View(suspicious)
@@ -30,12 +19,14 @@ View(suspicious)
 ggplot(College, aes(x = F.Undergrad,
                     y = Grad.Rate)) +
   geom_point()
+ggsave("Undergrad.png")
 
 # log transform F.undergrad
 
 ggplot(College, aes(x =log10 (F.Undergrad),
                     y = Grad.Rate)) +
   geom_point()
+ggsave("Undergrad_log_transform.png")
 
 #adding log10 colum to dataframe
 
@@ -53,11 +44,12 @@ ggplot(College, aes(x =log10 (F.Undergrad),
                     y = Grad.Rate)) +
   geom_point()+
   geom_smooth(method = "lm")
+ggsave("Modeling.png")
 
 model_undergrad <- lm(Grad.Rate ~ log_full,
                       data = college_log10)
 summary(model_undergrad)
-plot(model_undergrad)
+plot(model_undergrad) 
 
 #private?
 
@@ -68,6 +60,8 @@ ggplot(College, aes(x =log10 (F.Undergrad),
   geom_smooth(method = "lm",
               se = FALSE)+
   scale_color_brewer(palette = "Dark2")
+ggsave("Private.png")
+
 
 model_private <- lm(Grad.Rate ~ Private + log_full,
                     data = college_log10)
@@ -88,3 +82,28 @@ model_top <- lm(Grad.Rate ~ Private +
                   Top25perc,
                 data = college_log10)
 summary(model_top)
+
+#Favourite Colleges 
+
+head(college_log10)
+class(college_log10)
+
+#College Name is the index colum and is not recognized by the data frame
+#the code below fixes it
+
+college_log10_2 <- cbind(Name = rownames(college_log10), college_log10)
+rownames(college_log10) <- 1:nrow(college_log10)
+
+college_log10_2 |>
+  filter(Name == "Bowling Green State University" |
+           Name == "East Carolina University" |
+           Name == "Johns Hopkins University") |>
+  ggplot(aes(x = Name,
+             y = Grad.Rate, colour= Name))+
+  geom_point(size=5)+
+  scale_color_manual(values = c("Bowling Green State University" = "brown",
+                                "East Carolina University"="purple",
+                                "Johns Hopkins University"="lightblue")) +
+  coord_flip()+
+  labs(title = "Favourite Colleges Grad Rate")
+ggsave("Favourite_colleges_grad_rate.png")

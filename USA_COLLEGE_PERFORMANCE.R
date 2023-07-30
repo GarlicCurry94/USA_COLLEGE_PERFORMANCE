@@ -107,3 +107,25 @@ college_log10_2 |>
   coord_flip()+
   labs(title = "Favourite Colleges Grad Rate")
 ggsave("Favourite_colleges_grad_rate.png", scale = 2)
+
+
+College <- cbind(Name = rownames(College), College)
+rownames(College) <- 1:nrow(College)
+View(College)
+
+College <- College[,-1]
+View(College)
+
+College |>
+filter(Name == "Bowling Green State University" |
+         Name == "East Carolina University" |
+         Name == "Johns Hopkins University") |>
+  ggplot(aes(Accept, Enroll, colour = Name))+
+  geom_col()+
+  scale_color_manual(values = c("Bowling Green State University" = "brown",
+                                "East Carolina University"="purple",
+                                "Johns Hopkins University"="lightblue")) +
+  facet_wrap(~Name) 
+ggsave("Favourite_colleges_accept_v_enroll.png", scale = 2)
+
+

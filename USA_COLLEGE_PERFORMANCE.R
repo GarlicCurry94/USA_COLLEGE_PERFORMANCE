@@ -4,7 +4,10 @@ library(tidyverse)
 library(ggplot2)
 library(ISLR2)
 
+# RESETS THE COLLEGE DATAFRAME
+rm(College)
 
+data("College")
 View(College)
 
 # exploratory graphics
@@ -109,14 +112,15 @@ college_log10_2 |>
 ggsave("Favourite_colleges_grad_rate.png", scale = 2)
 
 
-College <- cbind(Name = rownames(College), College)
+College2 <- cbind(Name = rownames(College), College)
 rownames(College) <- 1:nrow(College)
-View(College)
+View(College2)
 
-College <- College[,-1]
-View(College)
+#REVERTS A SPARE COPY BACK TO ORGINAL DATA FRAME SETUP
+College3 <- College2[,-1]
+View(College3)
 
-College |>
+College2 |>
 filter(Name == "Bowling Green State University" |
          Name == "East Carolina University" |
          Name == "Johns Hopkins University") |>
@@ -128,4 +132,9 @@ filter(Name == "Bowling Green State University" |
   facet_wrap(~Name) 
 ggsave("Favourite_colleges_accept_v_enroll.png", scale = 2)
 
+#CREATING NEW DERIVED COLUMS 
+College2 ["Accept_vs_Enroll_ rate"] <- College2$Enroll / College2$Accept * 100
+View(College2)
 
+College2 ["Apps_vs_Enroll_ rate"] <- College2$Enroll / College2$Apps * 100
+View(College2)

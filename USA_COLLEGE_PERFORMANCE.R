@@ -1,8 +1,11 @@
 setwd("~/GitHub/USA_COLLEGE_PERFORMANCE")
 
+install.packages("writexl")
+
 library(tidyverse)
 library(ggplot2)
 library(ISLR2)
+library(writexl)
 
 # RESETS THE COLLEGE DATAFRAME
 rm(College)
@@ -133,8 +136,20 @@ filter(Name == "Bowling Green State University" |
 ggsave("Favourite_colleges_accept_v_enroll.png", scale = 2)
 
 #CREATING NEW DERIVED COLUMS 
-College2 ["Accept_vs_Enroll_ rate"] <- College2$Enroll / College2$Accept * 100
+College2 ["Accept_vs_Enroll_rate"] <- College2$Enroll / College2$Accept * 100
 View(College2)
 
-College2 ["Apps_vs_Enroll_ rate"] <- College2$Enroll / College2$Apps * 100
+College2 ["Apps_vs_Enroll_rate"] <- College2$Enroll / College2$Apps * 100
 View(College2)
+
+write_xlsx(College2, "College2.xlsx")
+
+ggplot(College2, aes(x = Accept_vs_Enroll_rate)) +
+  geom_histogram() +
+facet_wrap(~Private, ncol = 1)
+
+ggplot(College2, aes(x = Apps_vs_Enroll_rate)) +
+  geom_histogram() +
+  facet_wrap(~Private, ncol = 1)
+
+cor(College2$Accept_vs_Enroll_rate, College2$Apps_vs_Enroll_rate)
